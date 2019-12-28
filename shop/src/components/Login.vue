@@ -1,30 +1,22 @@
 <template>
-  <el-container v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)">
+  <el-container>
     <div class="login-bg">
       <div class="login">
-        <form class="login-form">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm" label-width="30px" class="login-form">
           <h1 class="title">
             <span>密码登录</span>
           </h1>
-          <div class="form-item">
-            <div class="form-item-container">
-              <label for="username" class="form-icon icon-phone"></label>
-              <input id="username" type="text" placeholder="请输入用户名" v-model.trim="username" v-on:keyup.13="login" spellcheck="false">
-            </div>
-          </div>
-          <div class="form-item">
-            <div class="form-item-container">
-              <label for="password" class="form-icon icon-lock"></label>
-              <input type="password" placeholder="请输入密码" v-model.trim="password" v-on:keyup.13="login" autocomplete>
-            </div>
-          </div>
-          <div class="form-item">
-            <a class="btn-login" @click="login">登录</a>
-          </div>
-          <div class="form-item">
-            <p class="forget-password">若忘记密码，请联系管理员</p>
-          </div>
-        </form>
+          <el-form-item label="" prop="username" class="itemMargin">
+            <el-input v-model.trim="loginForm.username" placeholder="请输入用户名" v-on:keyup.13="login" spellcheck="false" prefix-icon="el-icon-user-solid"></el-input>
+          </el-form-item>
+          <el-form-item label="" prop="password" class="itemMargin">
+            <el-input v-model.trim="loginForm.password" placeholder="请输入密码" v-on:keyup.13="login" autocomplete prefix-icon="el-icon-lock"></el-input>
+          </el-form-item>
+          <el-form-item class="itemMargin">
+            <el-button type="primary" @click="submitForm('loginForm')" class="btnLogin">登录</el-button>
+          </el-form-item>
+          <p class="forget-password">若忘记密码，请联系管理员</p>
+        </el-form>
       </div>
     </div>
   </el-container>
@@ -35,21 +27,27 @@ export default {
   name: 'Login',
   data () {
     return {
-      loading: false,
-      username: '',
-      password: ''
+      loginForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+      }
     }
   },
   methods: {
-    login () {
+    submitForm (formName) {
       const _self = this
-      if (!_self.username) {
-        _self.$message.warning('请输入用户名')
-      } else if (!_self.password) {
-        _self.$message.warning('请输入密码')
-      } else {
-        _self.$message.success('登录成功')
-      }
+      _self.$refs[formName].validate(valid => {
+        if (valid) {
+          // 请求接口
+          alert('submit!')
+        } else {
+          return false
+        }
+      })
     }
   }
 }
@@ -60,7 +58,7 @@ export default {
 .login-bg {
   width: 100vw;
   height: 100vh;
-  background: #2d4d6d;;
+  background: #2d4d6d;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,13 +71,16 @@ export default {
     padding-bottom: 40px;
     position: relative;
   }
+  .itemMargin {
+    margin-right: 30px;
+  }
 }
 .title {
   display: block;
   text-align: center;
   margin-bottom: 40px;
+  padding-top: 20px;
   box-sizing: content-box;
-  padding-top: 30px;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
 
@@ -102,81 +103,21 @@ export default {
       height: 3px;
       margin: 0 auto;
       margin-top: 15px;
-      background: #188ff0;
+      background: #2d4d6d;
     }
   }
 }
 
-.form-item {
-  padding: 0px 40px;
-  margin-bottom: 20px;
+.btnLogin {
+  width: 100%;
+  background: #2d4d6d;
+  border: 1px solid #2d4d6d;
+}
 
-  &:nth-last-child(2) {
-    margin-bottom: 40px;
-  }
-
-  &:last-child {
-    margin-bottom: 0px;
-  }
-
-  .form-item-container {
-    border: 1px solid #f2f6f7;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: row;
-    padding: 1px;
-
-    .form-icon {
-      display: block;
-      width: 40px;
-      height: 40px;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-
-      &.icon-phone {
-        &::before {
-          background: url(../../static/images/icon-phone.png) center/35%
-            no-repeat;
-        }
-      }
-
-      &.icon-lock {
-        &::before {
-          background: url(../../static/images/icon-lock.png) center/35% no-repeat;
-        }
-      }
-    }
-
-    input {
-      border: 0px;
-      flex: 1;
-      outline: none;
-      font-size: 14px;
-      color: #999999;
-    }
-  }
-
-  .btn-login {
-    display: block;
-    background: #188ff0;
-    color: #fff;
-    line-height: 40px;
-    text-align: center;
-    border-radius: radius1;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .forget-password {
-    color: #999999;
-    text-align: center;
-    font-size: 14px;
-  }
+.forget-password {
+  color: #999999;
+  text-align: center;
+  font-size: 14px;
 }
 
 input:-webkit-autofill,
