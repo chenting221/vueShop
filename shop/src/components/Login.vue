@@ -23,13 +23,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Login',
   data () {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       rules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -37,13 +38,35 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      stateApi: state => state.api
+    })
+  },
   methods: {
     submitForm (formName) {
       const _self = this
       _self.$refs[formName].validate(valid => {
         if (valid) {
-          // 请求接口
-          alert('submit!')
+          _self.$axios({
+            method: 'post',
+            url: _self.stateApi.sys.login,
+            data: {
+              username: _self.loginForm.username,
+              password: _self.loginForm.password
+            }
+          }).then((response) => {
+            const res = response.data
+            if (res.meta.status === 200) {
+              _self.$message.success(res.meta.msg)
+              _self.$tool.session.set('token', res.data.token)
+              _self.$router.push('/home')
+            } else {
+              _self.$message.success(res.meta.msg)
+            }
+          }).catch(() => {
+            return false
+          })
         } else {
           return false
         }

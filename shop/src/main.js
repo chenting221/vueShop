@@ -11,13 +11,26 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 // FontAwesome
 import 'font-awesome/css/font-awesome.css'
+import tool from './assets/js/tool'
+import store from './store/index'
 
 Vue.use(ElementUI)
 
 // 设置axios的默认超时时间为60秒
 axios.defaults.timeout = 60000
+// 设置axios的请求拦截器
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = tool.session.get('token')
+  return config
+})
+
 // 设置axios的默认错误处理的拦截器
-axios.interceptors.response.use()
+axios.interceptors.response.use(config => {
+  return config
+})
+
+Vue.prototype.$axios = axios
+Vue.prototype.$tool = tool
 
 Vue.config.productionTip = false
 
@@ -25,6 +38,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
