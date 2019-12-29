@@ -11,7 +11,11 @@ if (process.env.NODE_ENV === 'production') {
 // 服务器api地址
 const sysApi = {
   login: '/login', // 登录
-  menus: '/menus' // 左侧菜单
+  menus: '/menus', // 左侧菜单
+  users: {
+    list: '/users', // 用户数据列表
+    add: '/users'
+  }
 }
 
 // 自动给接口地址添加域名

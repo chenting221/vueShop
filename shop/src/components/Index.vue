@@ -2,7 +2,7 @@
   <el-container v-loading="loading"
                 element-loading-background="rgba(0, 0, 0, 0)">
     <el-aside :width="isCollapse ? '65px' : '240px'">
-      <el-header style="background:#2A3F54;color:#fff;font-size:22px;text-align:center;">Shopgogo</el-header>
+      <el-header style="background:#333744;color:#fff;font-size:22px;text-align:center;">shop</el-header>
       <side-bar :collapse="isCollapse"></side-bar>
     </el-aside>
     <el-container>
@@ -79,6 +79,13 @@ export default {
       const _self = this
       _self.isCollapse = !_self.isCollapse
       _self.$tool.session.set('collapse', _self.isCollapse.toString())
+    },
+    command (index) {
+      const _self = this
+      if (index === '1') {
+        // _self.$tool.session.del('token')
+        _self.$route.push('/login')
+      }
     }
   },
   /**

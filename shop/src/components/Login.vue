@@ -62,7 +62,7 @@ export default {
               _self.$tool.session.set('token', res.data.token)
               _self.$router.push('/home')
             } else {
-              _self.$message.success(res.meta.msg)
+              _self.$message.error(res.meta.msg)
             }
           }).catch(() => {
             return false
