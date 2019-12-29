@@ -1,17 +1,11 @@
 <template>
-  <el-dialog title="添加" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
+  <el-dialog title="添加角色" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
     <el-form :model="formInfo" :rules="rules" ref="formInfo">
-      <el-form-item label="用户名" :label-width="formLabelWidth" prop="username">
-        <el-input v-model="formInfo.username" class="select"></el-input>
+      <el-form-item label="角色名称" :label-width="formLabelWidth" prop="roleName">
+        <el-input v-model="formInfo.roleName" class="select"></el-input>
       </el-form-item>
-      <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
-        <el-input v-model="formInfo.password" class="select"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
-        <el-input v-model="formInfo.email" class="select"></el-input>
-      </el-form-item>
-      <el-form-item label="手机" :label-width="formLabelWidth" prop="mobile">
-        <el-input v-model="formInfo.mobile" class="select"></el-input>
+      <el-form-item label="角色描述" :label-width="formLabelWidth" prop="roleDesc">
+        <el-input v-model="formInfo.roleDesc" class="select"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -24,7 +18,7 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'AddNewUser',
+  name: 'AddRoles',
   props: {
     visible: {
       required: true,
@@ -35,69 +29,27 @@ export default {
     }
   },
   data () {
-    var checkEmail = (rule, value, callback) => {
-      const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-      if (regEmail.test(value)) {
-        return callback()
-      } else {
-        callback(new Error('请输入合法的邮箱'))
-      }
-    }
-    var checkMobile = (rule, value, callback) => {
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-      if (regMobile.test(value)) {
-        return callback()
-      } else {
-        callback(new Error('请输入合法的手机号'))
-      }
-    }
     return {
       formLabelWidth: '180px',
       formInfo: {
-        username: '',
-        password: '',
-        email: '',
-        mobile: ''
+        roleName: '',
+        roleDesc: ''
       },
       loading: false,
       rules: {
-        username: [
+        roleName: [
           {
             required: true,
-            message: '请输入用户名',
-            trigger: ['change', 'blur']
-          },
-          {
-            min: 3,
-            max: 10,
-            message: '用户名长度在3-10个字符之间',
+            message: '请输入用户名称',
             trigger: ['change', 'blur']
           }
         ],
-        password: [
+        roleDesc: [
           {
             required: true,
-            message: '请输入密码',
-            trigger: ['change', 'blur']
-          },
-          {
-            min: 6,
-            max: 15,
-            message: '密码长度在3-10个字符之间',
+            message: '请输入角色描述',
             trigger: ['change', 'blur']
           }
-        ],
-        email: [
-          {
-            required: true,
-            message: '请输入邮箱',
-            trigger: ['change', 'blur']
-          },
-          { validator: checkEmail, trigger: 'blur' }
-        ],
-        mobile: [
-          { required: true, message: '请输入手机', trigger: ['change', 'blur'] },
-          { validator: checkMobile, trigger: 'blur' }
         ]
       }
     }
@@ -138,7 +90,7 @@ export default {
             _self
               .$axios({
                 method: 'post',
-                url: _self.stateApi.sys.users.add,
+                url: 'https://www.liulongbin.top:8888/api/private/v1/roles',
                 data: _self.formInfo
               })
               .then(response => {

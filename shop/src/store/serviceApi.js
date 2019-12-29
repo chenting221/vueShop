@@ -15,6 +15,10 @@ const sysApi = {
   users: {
     list: '/users', // 用户数据列表
     add: '/users'
+  },
+  power: {
+    list: '/rights/list',
+    roles: '/roles'
   }
 }
 
