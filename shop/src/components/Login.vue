@@ -58,7 +58,6 @@ export default {
           }).then((response) => {
             const res = response.data
             if (res.meta.status === 200) {
-              _self.$message.success(res.meta.msg)
               _self.$tool.session.set('token', res.data.token)
               _self.$router.push('/home')
             } else {

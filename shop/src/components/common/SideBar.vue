@@ -55,7 +55,6 @@ export default {
       }).then((response) => {
         const res = response.data
         if (res.meta.status === 200) {
-          _self.$message.success(res.meta.msg)
           _self.menuList = res.data
         } else {
           _self.$message.fail(res.meta.msg)
