@@ -34,6 +34,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="edit">编辑</el-dropdown-item>
                 <el-dropdown-item command="del">删除</el-dropdown-item>
+                <el-dropdown-item command="assignRoles">分配角色</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -44,6 +45,7 @@
       </el-footer>
       <add-newUser v-if="dialogFormVisible" :visible.sync="dialogFormVisible" @closeDL="handleCloseDialog" @refreshList="onRefresList"></add-newUser>
       <edit-newUser v-if="dialogFormVisible2" :visible.sync="dialogFormVisible2" @closeDL="handleCloseDialog2" :data="editInfos" @refreshList="onRefresList"></edit-newUser>
+      <assign-roles v-if="dialogFormVisible3" :visible.sync="dialogFormVisible3" @closeDL="handleCloseDialog3" :data="editInfos" @refreshList="onRefresList"></assign-roles>
     </div>
   </div>
 </template>
@@ -67,12 +69,14 @@ export default {
       },
       dialogFormVisible: false,
       dialogFormVisible2: false,
+      dialogFormVisible3: false,
       editInfos: {}
     }
   },
   components: {
     'add-newUser': () => import('@/components/users/dialog/AddNewUser.vue'),
-    'edit-newUser': () => import('@/components/users/dialog/EditNewUser.vue')
+    'edit-newUser': () => import('@/components/users/dialog/EditNewUser.vue'),
+    'assign-roles': () => import('@/components/users/dialog/AssignRoles.vue')
   },
   computed: {
     tableHeight () {
@@ -213,7 +217,6 @@ export default {
                 _self.loading = false
                 const { data } = response
                 if (data.meta.status === 200) {
-                  _self.$message.success(data.meta.msg)
                   _self.init()
                 } else {
                   _self.$message.error(data.meta.msg)
@@ -224,6 +227,11 @@ export default {
               })
           })
           .catch(() => {})
+      }
+      // 分配角色
+      if (command === 'assignRoles') {
+        _self.dialogFormVisible3 = true
+        _self.editInfos = JSON.parse(JSON.stringify(row))
       }
     },
     /**
@@ -244,12 +252,20 @@ export default {
       _self.dialogFormVisible = false
     },
     /**
-     * 编辑按钮的关闭弹框事件
+     * 分配角色按钮的关闭弹框事件
      * @returns void
      */
     handleCloseDialog2 () {
       const _self = this
       _self.dialogFormVisible2 = false
+    },
+    /**
+     * 编辑按钮的关闭弹框事件
+     * @returns void
+     */
+    handleCloseDialog3 () {
+      const _self = this
+      _self.dialogFormVisible3 = false
     }
   },
   created () {

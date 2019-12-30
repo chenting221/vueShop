@@ -17,7 +17,8 @@
           </el-breadcrumb>
         </div>
         <div class="header-right">
-          <el-dropdown trigger="click">
+          <el-button type="primary" @click="layout">退出</el-button>
+          <!-- <el-dropdown trigger="click">
             <div class="el-dropdown-div">
               <span class="nickname"
                     v-text="'ctt'"></span>
@@ -27,7 +28,7 @@
               <el-dropdown-item :command="0">个人信息</el-dropdown-item>
               <el-dropdown-item :command="1">退出</el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
+          </el-dropdown> -->
         </div>
       </el-header>
       <el-main>
@@ -80,12 +81,13 @@ export default {
       _self.isCollapse = !_self.isCollapse
       _self.$tool.session.set('collapse', _self.isCollapse.toString())
     },
-    command (index) {
+    /**
+     * 退出按钮
+     */
+    layout () {
       const _self = this
-      if (index === '1') {
-        // _self.$tool.session.del('token')
-        _self.$route.push('/login')
-      }
+      _self.$tool.session.del('token')
+      _self.$router.push('/login')
     }
   },
   /**
@@ -123,7 +125,7 @@ export default {
   max-height: 100vh;
   overflow: auto;
   overflow-x: hidden;
-  background-color: #2a3f54;
+  background-color: #333744;
 }
 .el-main {
   max-height: calc(100vh - 60px);

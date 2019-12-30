@@ -18,6 +18,7 @@ const sysApi = {
   },
   power: {
     list: '/rights/list',
+    treeList: '/rights/tree',
     roles: '/roles'
   }
 }
