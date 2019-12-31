@@ -14,6 +14,10 @@ import 'font-awesome/css/font-awesome.css'
 import tool from './assets/js/tool'
 import store from './store/index'
 
+// vue-table-with-tree-grid
+import TreeTable from 'vue-table-with-tree-grid'
+Vue.component('tree-table', TreeTable)
+
 Vue.use(ElementUI)
 
 // 设置axios的默认超时时间为60秒

@@ -20,6 +20,11 @@ const sysApi = {
     list: '/rights/list',
     treeList: '/rights/tree',
     roles: '/roles'
+  },
+  goods: {
+    cate: {
+      list: '/categories'
+    }
   }
 }
 

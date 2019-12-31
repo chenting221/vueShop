@@ -9,6 +9,8 @@ const Users = () => import('@/components/users/Users')
 const Rights = () => import('@/components/power/Rights')
 const Roles = () => import('@/components/power/Roles')
 
+const Cate = () => import('@/components/goods/Cate')
+
 Vue.use(Router)
 
 export default new Router({
@@ -52,6 +54,17 @@ export default new Router({
             breadcrumb: [
               { name: '权限管理' },
               { name: '角色列表', path: '/roles' }
+            ]
+          }
+        },
+        {
+          path: '/categories',
+          name: 'categories',
+          component: Cate,
+          meta: {
+            breadcrumb: [
+              { name: '商品管理' },
+              { name: '商品分类', path: '/categories' }
             ]
           }
         }
