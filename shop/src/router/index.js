@@ -10,6 +10,7 @@ const Rights = () => import('@/components/power/Rights')
 const Roles = () => import('@/components/power/Roles')
 
 const Cate = () => import('@/components/goods/Cate')
+const Params = () => import('@/components/goods/Params')
 
 Vue.use(Router)
 
@@ -65,6 +66,17 @@ export default new Router({
             breadcrumb: [
               { name: '商品管理' },
               { name: '商品分类', path: '/categories' }
+            ]
+          }
+        },
+        {
+          path: '/params',
+          name: 'params',
+          component: Params,
+          meta: {
+            breadcrumb: [
+              { name: '商品管理' },
+              { name: '参数列表', path: '/params' }
             ]
           }
         }
