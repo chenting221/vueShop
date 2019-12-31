@@ -28,6 +28,14 @@ export default {
       type: Number
     }
   },
+  created () {
+    const _self = this
+    if (_self.title === '动态参数') {
+      _self.attrSel = 'many'
+    } else {
+      _self.attrSel = 'only'
+    }
+  },
   data () {
     const _self = this
     return {
@@ -35,7 +43,7 @@ export default {
       formInfo: {
         activeParams: ''
       },
-      message: '',
+      attrSel: '',
       loading: false,
       rules: {
         activeParams: [
@@ -72,7 +80,7 @@ export default {
       _self.$refs[formName].resetFields()
     },
     /**
-     * 确定发货按钮
+     * 确定按钮
      * @returns void
      */
     handleSubmit (formName) {
@@ -84,11 +92,10 @@ export default {
             _self
               .$axios({
                 method: 'post',
-                url: _self.stateApi.sys.goods.cate.list +'/' + _self.parentCate +'/' +'attributes',
+                url: _self.stateApi.sys.goods.cate.list + '/' + _self.parentCate + '/attributes',
                 data: {
-                  attr_name: '',
-                  attr_sel: '',
-                  attr_vals: ''
+                  attr_name: _self.formInfo.activeParams,
+                  attr_sel: _self.attrSel
                 }
               })
               .then(response => {

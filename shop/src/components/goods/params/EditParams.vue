@@ -1,13 +1,13 @@
 <template>
-  <el-dialog title="添加动态参数" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
-    <el-form :model="formInfo" :rules="rules" ref="formInfo">
-      <el-form-item label="分类名称" :label-width="formLabelWidth" prop="activeParam">
-        <el-input v-model="formInfo.activeParam" class="select"></el-input>
+  <el-dialog :title="'编辑' + title" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
+    <el-form :model="data" :rules="rules" ref="data">
+      <el-form-item :label="title" :label-width="formLabelWidth" prop="attr_name">
+        <el-input v-model="data.attr_name" class="select"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleCancle('formInfo')">取消</el-button>
-      <el-button type="primary" @click="handleSubmit('formInfo')" :disabled="loading">确定</el-button>
+      <el-button @click="handleCancle('data')">取消</el-button>
+      <el-button type="primary" @click="handleSubmit('data')" :disabled="loading">确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -15,7 +15,7 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  name: 'EditActiveParams',
+  name: 'EditParams',
   props: {
     visible: {
       required: true,
@@ -23,20 +23,33 @@ export default {
     },
     data: {
       type: Object
+    },
+    title: {
+      type: String
+    },
+    parentCate: {
+      type: Number
+    }
+  },
+  created () {
+    const _self = this
+    if (_self.title === '动态参数') {
+      _self.attrSel = 'many'
+    } else {
+      _self.attrSel = 'only'
     }
   },
   data () {
+    const _self = this
     return {
       formLabelWidth: '180px',
-      formInfo: {
-        activeParam: ''
-      },
+      attrSel: '',
       loading: false,
       rules: {
-        catename: [
+        attr_name: [
           {
             required: true,
-            activeParam: '请输入动态参数',
+            message: '请输入' + _self.title,
             trigger: ['change', 'blur']
           }
         ]
@@ -48,40 +61,7 @@ export default {
       stateApi: state => state.api
     })
   },
-  created () {
-    const _self = this
-    _self.init()
-  },
   methods: {
-    /**
-     * 页面初始化调用
-     * @returns void
-     */
-    init () {
-      const _self = this
-      _self.loading = true
-      // 列表接口
-      _self
-        .$axios({
-          method: 'get',
-          url: _self.stateApi.sys.goods.cate.list,
-          params: {
-            type: 2
-          }
-        })
-        .then(response => {
-          const { data } = response
-          _self.loading = false
-          if (data.meta.status === 200) {
-            _self.parentCateList = data.data
-          } else {
-            _self.$message.error(data.meta.msg)
-          }
-        })
-        .catch(() => {
-          _self.loading = false
-        })
-    },
     /**
      * 关闭弹框事件
      * @returns void
@@ -100,7 +80,7 @@ export default {
       _self.$refs[formName].resetFields()
     },
     /**
-     * 确定发货按钮
+     * 确定按钮
      * @returns void
      */
     handleSubmit (formName) {
@@ -111,18 +91,17 @@ export default {
             _self.loading = true
             _self
               .$axios({
-                method: 'post',
-                url: _self.stateApi.sys.goods.cate.list,
+                method: 'put',
+                url: _self.stateApi.sys.goods.cate.list + '/' + _self.data.cat_id + '/attributes/' + _self.data.attr_id,
                 data: {
-                  cat_pid: _self.cat_pid,
-                  cat_name: _self.formInfo.catename,
-                  cat_level: _self.cat_level
+                  attr_name: _self.data.attr_name,
+                  attr_sel: _self.attrSel
                 }
               })
               .then(response => {
                 _self.loading = false
                 const { data } = response
-                if (data.meta.status === 201) {
+                if (data.meta.status === 200) {
                   _self.$message.success(data.meta.msg)
                   _self.closeDialog()
                   _self.$emit('refreshList')
@@ -138,19 +117,6 @@ export default {
           return false
         }
       })
-    },
-    /**
-     * 父级分类
-     */
-    handleChange (value) {
-      const _self = this
-      if (value.length > 0) {
-        _self.cat_pid = value[value.length - 1]
-        _self.cat_level = value.length
-      } else {
-        _self.cat_pid = 0
-        _self.cat_level = 0
-      }
     }
   }
 }
