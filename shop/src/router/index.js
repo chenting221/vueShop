@@ -16,6 +16,8 @@ const GoodsAddPage = () => import('@/components/goods/list/GoodsAddPage')
 
 const Order = () => import('@/components/order/Order')
 
+const Report = () => import('@/components/report/Report')
+
 Vue.use(Router)
 
 export default new Router({
@@ -115,6 +117,17 @@ export default new Router({
             breadcrumb: [
               { name: '订单管理' },
               { name: '订单列表', path: '/orders' }
+            ]
+          }
+        },
+        {
+          path: '/reports',
+          name: 'reports',
+          component: Report,
+          meta: {
+            breadcrumb: [
+              { name: '数据统计' },
+              { name: '数据报表', path: '/reports' }
             ]
           }
         }

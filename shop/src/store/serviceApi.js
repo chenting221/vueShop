@@ -35,6 +35,9 @@ const sysApi = {
   order: {
     list: '/orders',
     kuaidi: '/kuaidi'
+  },
+  report: {
+    report: '/reports/type/1'
   }
 }
 
