@@ -10,7 +10,7 @@
     >
       <div
         id="myChart"
-        :style="{minWidth: '700px', height: '300px'}"
+        :style="{minWidth: '700px', height: '480px'}"
       ></div>
     </div>
   </div>
@@ -18,6 +18,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import _ from 'lodash'
 
 // 引入基本模板
 let echarts = require('echarts/lib/echarts')
@@ -35,6 +36,18 @@ export default {
     return {
       loading: false,
       options: {
+        title: {
+          text: '用户来源'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985'
+            }
+          }
+        },
         legend: {
           data: ['华东', '华南', '华北', '西部', '其他']
         },
@@ -109,7 +122,7 @@ export default {
         const { data } = response
         _self.loading = false
         if (data.meta.status === 200) {
-          let merge = Object.assign(data.data, _self.options)
+          const merge = _.merge(data.data, _self.options)
           myChart.setOption(merge)
         } else {
           _self.$message.error(data.meta.msg)
