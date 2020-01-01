@@ -14,6 +14,8 @@ const Params = () => import('@/components/goods/Params')
 const List = () => import('@/components/goods/List')
 const GoodsAddPage = () => import('@/components/goods/list/GoodsAddPage')
 
+const Order = () => import('@/components/order/Order')
+
 Vue.use(Router)
 
 export default new Router({
@@ -102,6 +104,17 @@ export default new Router({
               { name: '商品管理' },
               { name: '商品列表' },
               { name: '添加商品', path: '/goods/add' }
+            ]
+          }
+        },
+        {
+          path: '/orders',
+          name: 'orders',
+          component: Order,
+          meta: {
+            breadcrumb: [
+              { name: '订单管理' },
+              { name: '订单列表', path: '/orders' }
             ]
           }
         }

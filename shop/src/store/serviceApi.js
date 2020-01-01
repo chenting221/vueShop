@@ -31,6 +31,10 @@ const sysApi = {
     upload: {
       upload: '/upload'
     }
+  },
+  order: {
+    list: '/orders',
+    kuaidi: '/kuaidi'
   }
 }
 
