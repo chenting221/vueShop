@@ -16,9 +16,16 @@ import store from './store/index'
 
 // vue-table-with-tree-grid
 import TreeTable from 'vue-table-with-tree-grid'
-Vue.component('tree-table', TreeTable)
 
+// 导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.component('tree-table', TreeTable)
 Vue.use(ElementUI)
+Vue.use(VueQuillEditor)
 
 // 设置axios的默认超时时间为60秒
 axios.defaults.timeout = 60000
@@ -37,6 +44,18 @@ Vue.prototype.$axios = axios
 Vue.prototype.$tool = tool
 
 Vue.config.productionTip = false
+
+// 全局过滤器
+Vue.filter('dateFormat', function (originVal) {
+  const dt = new Date(originVal)
+  const year = dt.getFullYear()
+  const month = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const day = (dt.getDate() + '').padStart(2, '0')
+  const hours = (dt.getHours() + '').padStart(2, '0')
+  const mintues = (dt.getMinutes() + '').padStart(2, '0')
+  const sencond = (dt.getSeconds() + '').padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${mintues}:${sencond}`
+})
 
 /* eslint-disable no-new */
 new Vue({

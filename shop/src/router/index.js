@@ -11,6 +11,8 @@ const Roles = () => import('@/components/power/Roles')
 
 const Cate = () => import('@/components/goods/Cate')
 const Params = () => import('@/components/goods/Params')
+const List = () => import('@/components/goods/List')
+const GoodsAddPage = () => import('@/components/goods/list/GoodsAddPage')
 
 Vue.use(Router)
 
@@ -77,6 +79,29 @@ export default new Router({
             breadcrumb: [
               { name: '商品管理' },
               { name: '参数列表', path: '/params' }
+            ]
+          }
+        },
+        {
+          path: '/goods',
+          name: 'goods',
+          component: List,
+          meta: {
+            breadcrumb: [
+              { name: '商品管理' },
+              { name: '商品列表', path: '/goods' }
+            ]
+          }
+        },
+        {
+          path: '/goods/add',
+          name: 'goods/add',
+          component: GoodsAddPage,
+          meta: {
+            breadcrumb: [
+              { name: '商品管理' },
+              { name: '商品列表' },
+              { name: '添加商品', path: '/goods/add' }
             ]
           }
         }

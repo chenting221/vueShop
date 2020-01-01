@@ -24,6 +24,12 @@ const sysApi = {
   goods: {
     cate: {
       list: '/categories'
+    },
+    goods: {
+      list: '/goods'
+    },
+    upload: {
+      upload: '/upload'
     }
   }
 }
