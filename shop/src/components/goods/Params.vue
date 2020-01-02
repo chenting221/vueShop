@@ -27,7 +27,7 @@
       style="margin-bottom: 20px;"
     >
       <el-alert
-        title="注意：指允许为第三级分类设置相关参数！"
+        title="注意：只允许为第三级分类设置相关参数！"
         type="warning"
         show-icon
         style="margin-bottom: 20px;"
@@ -289,7 +289,7 @@ export default {
     del (row) {
       const _self = this
       _self
-        .$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        .$confirm('此操作将永久删除该值, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

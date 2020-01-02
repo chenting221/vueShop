@@ -57,6 +57,12 @@ export default {
   },
   created () {
     const _self = this
+    // 很重要 作用是 刷新页面使动态面包屑不会消失
+    _self.breadcrumbList = _self.$route.meta['breadcrumb']
+    _self.init()
+  },
+  activated () {
+    const _self = this
     _self.init()
   },
   methods: {

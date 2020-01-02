@@ -2,7 +2,7 @@
   <el-dialog title="修改地址" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
     <el-form :model="formInfo" :rules="rules" ref="formInfo">
       <el-form-item label="省市区/县" :label-width="formLabelWidth" prop="address1">
-        <el-input v-model="formInfo.address1" disabled class="select"></el-input>
+        <el-input v-model="formInfo.address1" class="select"></el-input>
       </el-form-item>
       <el-form-item label="详细地址" :label-width="formLabelWidth" prop="address2">
         <el-input v-model="formInfo.address2" class="select"></el-input>

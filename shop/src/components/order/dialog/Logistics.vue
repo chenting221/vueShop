@@ -1,13 +1,15 @@
 <template>
-  <el-dialog title="查看物流进度" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
-    <el-timeline>
-      <el-timeline-item
-        v-for="(activity, index) in progressInfo"
-        :key="index"
-        :timestamp="activity.time">
-        {{activity.context}}
-      </el-timeline-item>
-    </el-timeline>
+  <el-dialog title="查看物流进度" :visible="visible" width="45%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
+    <el-form style="height: 400px; overflow-y: scroll;">
+      <el-timeline>
+        <el-timeline-item
+          v-for="(activity, index) in progressInfo"
+          :key="index"
+          :timestamp="activity.time">
+          {{activity.context}}
+        </el-timeline-item>
+      </el-timeline>
+    </el-form>
   </el-dialog>
 
 </template>

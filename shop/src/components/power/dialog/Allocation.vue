@@ -1,10 +1,12 @@
 <template>
-  <el-dialog title="分配权限" :visible="visible" width="38%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
-    <el-tree ref="treeRef" :data="rightTreeList" :props="treeProps" show-checkbox node-key="id" :default-expand-all="true" :default-checked-keys="defkeys"></el-tree>
+  <el-dialog title="分配权限" :visible="visible" width="45%" :before-close="closeDialog" @close="closeDialog" :close-on-click-modal="false">
+    <el-form :model="data" ref="data" style="height: 400px; overflow-y: scroll;">
+      <el-tree ref="treeRef" :data="rightTreeList" :props="treeProps" show-checkbox node-key="id" :default-expand-all="true" :default-checked-keys="defkeys"></el-tree>
+    </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="handleCancle()">取消</el-button>
-      <el-button type="primary" @click="handleSubmit(data)" :disabled="loading">确定</el-button>
-    </span>
+        <el-button @click="handleCancle()">取消</el-button>
+        <el-button type="primary" @click="handleSubmit(data)" :disabled="loading">确定</el-button>
+      </span>
   </el-dialog>
 </template>
 
