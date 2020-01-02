@@ -7,10 +7,10 @@
             <span>密码登录</span>
           </h1>
           <el-form-item label="" prop="username" class="itemMargin">
-            <el-input v-model.trim="loginForm.username" placeholder="请输入用户名" v-on:keyup.13="login" spellcheck="false" prefix-icon="el-icon-user-solid"></el-input>
+            <el-input v-model.trim="loginForm.username" placeholder="请输入用户名" @keyup.enter.native="submitForm('loginForm')" spellcheck="false" prefix-icon="el-icon-user-solid"></el-input>
           </el-form-item>
           <el-form-item label="" prop="password" class="itemMargin">
-            <el-input v-model.trim="loginForm.password" placeholder="请输入密码" v-on:keyup.13="login" autocomplete prefix-icon="el-icon-lock"></el-input>
+            <el-input v-model.trim="loginForm.password" placeholder="请输入密码" @keyup.enter.native="submitForm('loginForm')" autocomplete prefix-icon="el-icon-lock"></el-input>
           </el-form-item>
           <el-form-item class="itemMargin">
             <el-button type="primary" @click="submitForm('loginForm')" class="btnLogin">登录</el-button>
