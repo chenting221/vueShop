@@ -6,7 +6,7 @@ import router from './router'
 import axios from 'axios'
 
 // ElementUI
-import ElementUI from 'element-ui'
+import ElementUI, { Message } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 // FontAwesome
@@ -30,15 +30,58 @@ Vue.use(VueQuillEditor)
 // 设置axios的默认超时时间为60秒
 axios.defaults.timeout = 60000
 // 设置axios的请求拦截器
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = tool.session.get('token')
-  return config
-})
-
+axios.interceptors.request.use(
+  config => {
+    const token = tool.session.get('token')
+    if (token) {
+      config.headers.Authorization = tool.session.get('token')
+    } else {
+      vm.$router.replace('/login')
+    }
+    return config
+  },
+  err => {
+    return Promise.reject(err)
+  }
+)
 // 设置axios的默认错误处理的拦截器
-axios.interceptors.response.use(config => {
-  return config
-})
+axios.interceptors.response.use(
+  response => {
+    const data = response
+    // token 超时
+    if (data.code) {
+      // 删除axios的默认全局token设置
+      delete Vue.prototype.$axios.defaults.headers['Authorization']
+
+      Message({
+        type: 'warning',
+        message: '操作超时'
+      })
+      vm.$router.replace('/login')
+    }
+    return response
+  },
+  err => {
+    if (err.stack.indexOf('timeout') >= 0) {
+      Message.error('操作超时')
+    } else {
+      if (err.response) {
+        const { data } = err.response
+        if (data.code) {
+          Message({
+            type: 'warning',
+            message: data.msg
+          })
+        } else {
+          Message.error('操作失败，系统异常')
+        }
+      } else {
+        Message.error('服务器连接失败')
+      }
+    }
+    return err
+  }
+)
 
 Vue.prototype.$axios = axios
 Vue.prototype.$tool = tool
@@ -58,7 +101,7 @@ Vue.filter('dateFormat', function (originVal) {
 })
 
 /* eslint-disable no-new */
-new Vue({
+const vm = new Vue({
   el: '#app',
   router,
   store,
