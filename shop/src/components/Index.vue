@@ -31,16 +31,29 @@
           </el-dropdown> -->
         </div>
       </el-header>
-      <el-main>
-        <keep-alive>
-          <router-view />
-        </keep-alive>
-      </el-main>
+      <div class="index-top">
+        <el-tabs v-model="topMenuIndex" @tab-click="tabClick" @tab-remove="tabRemove">
+          <el-tab-pane name="/home" label="首页"></el-tab-pane>
+          <el-tab-pane
+            v-for="item of topMenuList"
+            :key="'topMenu' + item.name"
+            :label="item.label"
+            :name="item.name"
+            :closable="item.name === '/home' ? false : true"
+          ></el-tab-pane>
+        </el-tabs>
+        <el-main>
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </el-main>
+      </div>
     </el-container>
   </el-container>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import SideBar from '@/components/common/SideBar.vue'
 
 export default {
@@ -52,13 +65,30 @@ export default {
     return {
       loading: false,
       isCollapse: false,
-      breadcrumbList: [] // 面包屑列表
+      breadcrumbList: [], // 面包屑列表
+      topMenuIndex: '/home',
+      topMenuIndex2: '/home'
     }
+  },
+  computed: {
+    ...mapState('topMenu', {
+      topMenuList: state => state.list
+    })
   },
   created () {
     const _self = this
     // 很重要 作用是 刷新页面使动态面包屑不会消失
     _self.breadcrumbList = _self.$route.meta['breadcrumb']
+    // 设置顶部导航面板
+    const topMenu = _self.$tool.session.get('topMenu')
+    const topMenuList = _self.$tool.session.get('topMenuList')
+    if (topMenuList) {
+      _self.topMenuReplaceAll(topMenuList)
+    }
+    if (topMenu) {
+      _self.topMenuIndex = topMenu
+      _self.topMenuIndex2 = topMenu
+    }
     _self.init()
   },
   activated () {
@@ -66,6 +96,11 @@ export default {
     _self.init()
   },
   methods: {
+    ...mapMutations('topMenu', {
+      topMenuPush: 'push',
+      topMenuClear: 'clear',
+      topMenuReplaceAll: 'replaceAll'
+    }),
     init () {
       const _self = this
       const collapse = _self.$tool.session.get('collapse')
@@ -94,13 +129,96 @@ export default {
       const _self = this
       _self.$tool.session.del('token')
       _self.$router.push('/login')
+    },
+    /**
+     * 切换导航tab
+     * @returns void
+     */
+    tabClick (obj) {
+      const _self = this
+      if (_self.topMenuIndex === '/home') {
+        _self.topMenuIndex2 = '/home'
+        _self.$router.push({ path: '/home' })
+      } else {
+        if (obj.name === _self.topMenuIndex2) return
+        _self.$nextTick(() => {
+          const breadcrumb = _self.topMenuList.find((item) => {
+            return item.name === _self.topMenuIndex
+          })
+          if (breadcrumb) {
+            let path = ''
+            if (breadcrumb.hasParams) path = breadcrumb.truePath
+            else path = breadcrumb.name
+            _self.$router.push({
+              path: path,
+              query: breadcrumb.query ? breadcrumb.query : {}
+            })
+          }
+          _self.topMenuIndex2 = _self.topMenuIndex
+          _self.$tool.session.set('topMenu', _self.topMenuIndex)
+        })
+      }
+    },
+
+    /**
+     * 删除导航tab
+     * @param name 路由地址
+     * @returns void
+     */
+    tabRemove (name) {
+      const _self = this
+      let activeName = _self.topMenuIndex
+      let tabs = _self.topMenuList
+
+      if (_self.topMenuIndex === name) {
+        let nextTab = null
+        _self.topMenuList.forEach((item, index) => {
+          if (item.name === name) {
+            nextTab = tabs[index + 1] || tabs[index - 1]
+            if (nextTab) activeName = nextTab.name
+          }
+        })
+
+        if (_self.topMenuIndex === activeName) {
+          activeName = '/home'
+          tabs = []
+        } else {
+          tabs = tabs.filter((item) => item.name !== name)
+        }
+      } else {
+        tabs = tabs.filter((item) => item.name !== name)
+      }
+
+      _self.topMenuReplaceAll(_self.$tool.deepCopy(tabs))
+      _self.topMenuIndex = activeName
+      _self.topMenuIndex2 = _self.topMenuIndex
+
+      _self.$nextTick(() => {
+        if (activeName !== '/home') {
+          const breadcrumb = _self.topMenuList.find((item) => {
+            return item.name === _self.topMenuIndex
+          })
+          if (breadcrumb) {
+            let path = ''
+            if (breadcrumb.hasParams) path = breadcrumb.truePath
+            else path = breadcrumb.name
+            _self.$router.push({
+              path: path,
+              query: breadcrumb.query ? breadcrumb.query : {}
+            })
+          }
+        } else {
+          _self.$router.push('/home')
+        }
+        _self.$tool.session.set('topMenu', _self.topMenuIndex)
+        _self.$tool.session.set('topMenuList', _self.topMenuList)
+      })
     }
   },
   /**
    * 根据路由展示面包屑
   */
   beforeRouteUpdate (to, from, next) {
-    console.log(to)
     const _self = this
     if (to.meta.breadcrumb) {
       _self.breadcrumbList = to.meta['breadcrumb']
@@ -109,6 +227,45 @@ export default {
     }
     if (to.path === '/home') {
       next()
+      return
+    }
+    // 顶部菜单面板
+    const keys = Object.keys(to.params)
+    let path = to.path
+    if (keys.length > 0) {
+      const pathArr = to.path.split('/')
+      path = pathArr.slice(0, pathArr.length - keys.length).join('/')
+    } else {
+      path = to.path
+    }
+    const topMenuItem = _self.topMenuList.find((item) => {
+      let result = item.name === path
+      if (!result) {
+        const pathArr = to.path.split('/')
+        result = item.name === pathArr.slice(0, pathArr.length - keys.length).join('/')
+      }
+      return result
+    })
+    if (topMenuItem) {
+      _self.topMenuIndex = topMenuItem.name
+      _self.topMenuIndex2 = topMenuItem.name
+    } else {
+      const breadcrumb = _self.breadcrumbList[_self.breadcrumbList.length - 1]
+      if (breadcrumb) {
+        _self.topMenuPush({
+          name: path,
+          label: to.meta.breadcrumb[to.meta.breadcrumb.length - 1].name,
+          hasParams: keys.length > 0,
+          truePath: to.path,
+          query: to.query
+        })
+      }
+      _self.$nextTick(() => {
+        _self.topMenuIndex = topMenuItem ? topMenuItem.name : path
+        _self.topMenuIndex2 = _self.topMenuIndex
+        _self.$tool.session.set('topMenu', _self.topMenuIndex)
+        _self.$tool.session.set('topMenuList', _self.topMenuList)
+      })
     }
     next()
   }
